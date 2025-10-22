@@ -1,0 +1,32 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+# Ignorer les environnements virtuels
+venv/
+.env/
+.venv/
+ENV/
+env/
+
+# Ignorer les fichiers Python compilés
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignorer les logs
+*.log
+
+# Ignorer les fichiers temporaires
+*.sqlite3
+*.db
+.DS_Store
+
+# Ignorer les fichiers/tests générés
+coverage/
+.pytest_cache/
+htmlcov/
+
+# Ignorer les outils d’IDE
+.vscode/
+.idea/
+
+# Ignorer les fichiers système
+Thumbs.db
