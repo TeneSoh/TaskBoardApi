@@ -120,7 +120,7 @@ def test_create_user(test_user):
 
 @pytest.mark.asyncio
 async def test_login(test_user):
-    data = {"username": test_user.username, "password": "lyonnel123"} 
+    data = {"username": test_user.username, "password": "lyonnel123"}
 
     response = client.post("/auth/login-user", data=data)
     assert response.status_code == status.HTTP_202_ACCEPTED
