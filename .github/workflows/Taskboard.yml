@@ -21,7 +21,7 @@ jobs:
           pip install flake8 black isort  
       - name: Run flake8
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
       - name: Check code formating with Black
         run: black --check .
       - name: Check importation with isort
@@ -43,8 +43,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=src" >> $GITHUB_ENV
       - name: Run tests
         run: |
           pytest -vv
