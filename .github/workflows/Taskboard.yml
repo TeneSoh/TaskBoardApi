@@ -45,7 +45,7 @@ jobs:
           pip install pytest
       - name: Run tests
         run: |
-          pytest -vv
+          pytest src/tests -vv
 
   deploy:
     name: deploy to render
