@@ -9,7 +9,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-from src.models import User 
+from src.models import User
 from src.services.services import *
 
 route = APIRouter(prefix="/auth", tags=["auth"])

@@ -7,7 +7,7 @@ from src.database import SessionLocal, engin
 from src.models import Base
 
 Base.metadata.create_all(bind=engin)
- 
+
 
 def get_db():
     db = SessionLocal()
