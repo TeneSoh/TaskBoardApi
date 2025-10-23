@@ -60,7 +60,7 @@ async def getRefreshToken(username: str, id: int, expire_days: int = 7):
     expired_days = datetime.now(timezone.utc) + timedelta(minutes=expire_days)
     payload.update({"exp": expired_days})
     access_token = jwt.encode(
-        claims=payload, key=config("SECRETE_KEY"), algorithm=config("ALGORITHME")
+        claims=payload, key=config("SECRETE_KEY"), algorithm=config("ALGORITHME") # type: ignore
     )
     return access_token
 
