@@ -76,7 +76,9 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
             return {"username": username, "id": user_id}
 
-        raise HTTPException(status_code=401, detail="Invalid scope for token newtwork !!")
+        raise HTTPException(
+            status_code=401, detail="Invalid scope for token newtwork !!"
+        )
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
 
