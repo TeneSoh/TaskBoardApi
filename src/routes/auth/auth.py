@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel
 
 from src.models import User
 from src.services.services import *
@@ -85,7 +84,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 # register the user
 @route.post("/register-user", status_code=status.HTTP_201_CREATED)
-def createUser(data: UserRequest, db: db_dependency):
+async def createUser(data: UserRequest, db: db_dependency):
     user = User(
         username=data.username,
         email=data.email,
