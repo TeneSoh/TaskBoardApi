@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, Path
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from src.database import SessionLocal, engin

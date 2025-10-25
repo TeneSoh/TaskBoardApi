@@ -6,7 +6,7 @@ from sqlalchemy import text
 from starlette import status
 
 from src.models import User
-from src.routes.auth import (
+from src.routes.auth.auth import (
     authenticateUser,
     get_current_user,
     getAccessToken,
