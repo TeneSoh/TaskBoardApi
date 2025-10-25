@@ -1,4 +1,3 @@
-import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
@@ -49,7 +48,7 @@ async def getAccessToken(username: str, id: int, expire_minutes: int):
     expired_time = datetime.now(timezone.utc) + timedelta(minutes=expire_minutes)
     payload.update({"exp": expired_time})
     access_token = jwt.encode(
-        claims=payload, key=config("SECRETE_KEY"), algorithm=config("ALGORITHME")
+        claims=payload, key=config("SECRETE_KEY"), algorithm=config("ALGORITHME")  # type: ignore
     )
     return access_token
 
@@ -60,7 +59,7 @@ async def getRefreshToken(username: str, id: int, expire_days: int = 7):
     expired_days = datetime.now(timezone.utc) + timedelta(minutes=expire_days)
     payload.update({"exp": expired_days})
     access_token = jwt.encode(
-        claims=payload, key=config("SECRETE_KEY"), algorithm=config("ALGORITHME") # type: ignore
+        claims=payload, key=config("SECRETE_KEY"), algorithm=config("ALGORITHME")  # type: ignore
     )
     return access_token
 
@@ -69,7 +68,7 @@ async def getRefreshToken(username: str, id: int, expire_days: int = 7):
 def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(
-            token=token, key=config("SECRETE_KEY"), algorithms=config("ALGORITHME")
+            token=token, key=config("SECRETE_KEY"), algorithms=config("ALGORITHME")  # type: ignore
         )
         if payload["scope"] == "access_token":
             username = payload["sub"]
@@ -77,7 +76,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
             return {"username": username, "id": user_id}
 
-        raise HTTPException(status_code=401, detail="Invalid scope for token newtwork")
+        raise HTTPException(status_code=401, detail="Invalid scope for token newtwork !!")
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
 
