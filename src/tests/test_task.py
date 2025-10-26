@@ -12,7 +12,7 @@ from src.tests.utilities import *
 
 app.dependency_overrides[get_db] = getTest_db
 
-
+# setup default project
 @pytest.fixture
 def test_task(test_project):
     with engine.connect() as con:
