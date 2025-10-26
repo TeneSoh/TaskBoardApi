@@ -194,4 +194,4 @@ async def get_user_projects_tasks(
         print("ERREUR get_all_project_task :", e)
         traceback.print_exc()
         db.rollback()
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))

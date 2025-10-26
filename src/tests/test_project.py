@@ -16,7 +16,7 @@ def test_project(test_user):
         con.execute(text("DELETE FROM projects"))
         con.commit()
 
-    # Authentification 
+    # Authentification
     data = {"username": test_user.username, "password": "lyonnel123"}
 
     login_response = client.post("/auth/login-user", data=data)
