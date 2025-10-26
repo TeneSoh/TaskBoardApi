@@ -15,7 +15,6 @@ from src.routes.auth.auth import (
 from src.services.services import get_db
 from src.tests.utilities import *
 
-
 app.dependency_overrides[get_db] = getTest_db
 bcrypt_context = CryptContext(["argon2", "bcrypt"], deprecated="auto")
 

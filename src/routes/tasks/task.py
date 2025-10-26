@@ -24,7 +24,6 @@ class TaskPriority(str, Enum):
     HIGH = "high"
 
 
-
 class TaskRequest(BaseModel):
     title: str
     description: str

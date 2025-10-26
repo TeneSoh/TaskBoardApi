@@ -18,7 +18,7 @@ class UserRequest(BaseModel):
     email: str
     password: str
 
- 
+
 # config the jwt
 # secrete_key = secrets.token_urlsafe(64)
 # ALGORITHM = "HS256"
