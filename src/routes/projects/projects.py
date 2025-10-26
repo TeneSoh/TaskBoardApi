@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
 
-from src.models import Project
+from src.models import Project, Task
 from src.routes.auth.auth import get_current_user
 from src.services.services import *
 
 user_dependency = Annotated[dict, Depends(get_current_user)]
-rout = APIRouter(prefix="/project", tags=["projects"])
+route = APIRouter(prefix="/project", tags=["projects"])
 
 
 # Project validating request
@@ -15,79 +15,98 @@ class ProjectRequest(BaseModel):
 
 
 # Get all project
-@rout.get("/", status_code=status.HTTP_200_OK)
+@route.get("/", status_code=status.HTTP_200_OK)
 async def get_projects(db: db_dependency, user: user_dependency):
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+        projects = db.query(Project).filter(Project.user_id == user.get("id")).all()
 
-    projects = db.query(Project).filter(Project.user_id == user.get("id")).all()
-
-    return projects
+        return projects
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Get unique project
-@rout.get("/{project_id}", status_code=status.HTTP_200_OK)
+@route.get("/{project_id}", status_code=status.HTTP_200_OK)
 async def get_unique_project(
     db: db_dependency, user: user_dependency, project_id: int = Path(gt=0)
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    project = db.query(Project).filter_by(user_id=user.get("id"), id=project_id).first()
+        project = (
+            db.query(Project).filter_by(user_id=user.get("id"), id=project_id).first()
+        )
 
-    if project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
+        if project is None:
+            raise HTTPException(status_code=404, detail="Project not found")
 
-    return project
+        return project
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Create project
-@rout.post("/create", status_code=status.HTTP_201_CREATED)
+@route.post("/create/", status_code=status.HTTP_201_CREATED)
 async def create_project(
     db: db_dependency, user: user_dependency, data: ProjectRequest
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    new_project = Project(
-        name=data.name, description=data.description, user_id=user.get("id")
-    )
+        new_project = Project(
+            name=data.name, description=data.description, user_id=user.get("id")
+        )
 
-    db.add(new_project)
-    db.commit()
-    db.refresh(new_project)
+        db.add(new_project)
+        db.commit()
+        db.refresh(new_project)
 
-    return new_project
+        return new_project
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # edit project
-@rout.put("/edit-project/{project_id}", status_code=status.HTTP_200_OK)
+@route.put("/edit-project/{project_id}", status_code=status.HTTP_200_OK)
 async def edit_project(
     db: db_dependency,
     user: user_dependency,
     data: ProjectRequest,
     project_id: int = Path(gt=0),
 ):
-    if user is None:
-        raise HTTPException(status_code=401, detail="Authentication Failed")
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
 
-    project = db.query(Project).filter_by(user_id=user.get("id"), id=project_id).first()
+        project = (
+            db.query(Project).filter_by(user_id=user.get("id"), id=project_id).first()
+        )
 
-    if project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
+        if project is None:
+            raise HTTPException(status_code=404, detail="Project not found")
 
-    setattr(project, "name", data.name)
-    setattr(project, "description", data.description)
+        setattr(project, "name", data.name)
+        setattr(project, "description", data.description)
 
-    db.commit()
-    db.refresh(project)
+        db.commit()
+        db.refresh(project)
 
-    return project
+        return project
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Delete project
-@rout.delete("/delete-project/{project_id}", status_code=status.HTTP_200_OK)
+@route.delete("/delete-project/{project_id}", status_code=status.HTTP_200_OK)
 async def delete_project(
     db: db_dependency, user: user_dependency, project_id: int = Path(gt=0)
 ):
@@ -110,3 +129,51 @@ async def delete_project(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Internal server error")
+
+
+# Get all projects for connected user
+@route.get("/user/", status_code=status.HTTP_200_OK)
+async def get_user_projects(db: db_dependency, user: user_dependency):
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
+
+        projects = db.query(Project).filter(Project.user_id == user.get("id")).all()
+
+        return projects
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Get all projects for any user
+@route.get("/user/{user_id}", status_code=status.HTTP_200_OK)
+async def get_any_user_projects(
+    db: db_dependency, user: user_dependency, user_id: int = Path(gt=0)
+):
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
+
+        projects = db.query(Project).filter(Project.user_id == user_id).all()
+        return projects
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# Get all projects tasks
+@route.get("/{project_id}/tasks", status_code=status.HTTP_200_OK)
+async def get_user_projects_tasks(
+    db: db_dependency, user: user_dependency, project_id: int = Path(gt=0)
+):
+    try:
+        if user is None:
+            raise HTTPException(status_code=401, detail="Authentication Failed")
+
+        tasks = db.query(Task).filter(Task.project_id == project_id).all()
+        return tasks
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
