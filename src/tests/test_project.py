@@ -49,6 +49,7 @@ def test_project(test_user):
         con.commit()
 
 
+# test get all projects
 @pytest.mark.asyncio
 @pytest.mark.integration
 async def test_get_projects(test_project):
@@ -68,6 +69,7 @@ async def test_get_projects(test_project):
     ]
 
 
+# Test get unique project
 @pytest.mark.asyncio
 @pytest.mark.integration
 async def test_get_unique_project(test_user, test_project):
@@ -83,6 +85,7 @@ async def test_get_unique_project(test_user, test_project):
     assert project.description == project_data.get("description")
 
 
+# Test create project
 @pytest.mark.asyncio
 @pytest.mark.integration
 async def test_create_project(test_project):
@@ -95,7 +98,7 @@ async def test_create_project(test_project):
         "user_id": project.user_id,
     }
 
-    response = client.post("/project/create", json=new_project, headers=headers)
+    response = client.post("/project/create/", json=new_project, headers=headers)
 
     assert response is not None
     assert response.status_code == status.HTTP_201_CREATED
@@ -106,6 +109,7 @@ async def test_create_project(test_project):
     assert new_project.get("description") == get_new_project.description  # type:ignore
 
 
+# Test edit project
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_edit_project(test_project):
@@ -127,6 +131,7 @@ async def test_edit_project(test_project):
     assert unique_project.description == new_data.get("description")  # type:ignore
 
 
+# Test delete project
 @pytest.mark.asyncio
 @pytest.mark.integration
 async def test_delete_project(test_project):
@@ -135,8 +140,47 @@ async def test_delete_project(test_project):
     response = client.delete(f"/project/delete-project/{project.id}", headers=headers)
 
     deleted_data = response.json()
-    print(deleted_data)
     assert response is not None
     assert response.status_code == status.HTTP_200_OK
     assert project.name == deleted_data.get("name")
     assert project.description == deleted_data.get("description")
+
+
+# Test Get all projects for any user
+@pytest.mark.asyncio
+@pytest.mark.integration
+async def test_get_any_user_projects(test_project):
+    project, headers = test_project
+    response = client.get(f"/project/user/{project.user_id}", headers=headers)
+    deleted_data = response.json()
+    assert response is not None
+    assert response.status_code == status.HTTP_200_OK
+    assert project.name == deleted_data[0].get("name")
+    assert project.description == deleted_data[0].get("description")
+
+
+# Test Get all projects for connected user
+@pytest.mark.asyncio
+@pytest.mark.integration
+async def test_get_user_projects(test_project):
+    project, headers = test_project
+
+    response = client.get("/project/user/", headers=headers)
+    all_data = response.json()
+    print(response)
+    assert response is not None
+    assert response.status_code == status.HTTP_200_OK
+    assert project.name == all_data[0].get("name")
+    assert project.description == all_data[0].get("description")
+
+
+# Test Get all projects tasks
+@pytest.mark.asyncio
+@pytest.mark.integration
+async def test_get_project_tasks(test_project):
+    project, headers = test_project
+    response = client.get(f"/project/{project.id}/tasks", headers=headers)
+    deleted_data = response.json()
+    assert response is not None
+    assert response.status_code == status.HTTP_200_OK
+    assert isinstance(deleted_data, list)
