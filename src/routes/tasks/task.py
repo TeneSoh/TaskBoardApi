@@ -57,7 +57,7 @@ async def get_tasks(db: db_dependency, user: user_dependency):
 
         return tasks
     except Exception as e:
-        print("❌ ERREUR get_tasks :", e)
+        print("ERREUR get_tasks :", e)
         traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))

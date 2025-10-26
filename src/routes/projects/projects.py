@@ -1,3 +1,4 @@
+import traceback
 from fastapi import APIRouter, HTTPException, status
 
 from src.models import Project, Task
@@ -25,6 +26,8 @@ async def get_projects(db: db_dependency, user: user_dependency):
 
         return projects
     except Exception as e:
+        print("ERREUR get_projects :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -47,6 +50,8 @@ async def get_unique_project(
 
         return project
     except Exception as e:
+        print("ERREUR get_unique_project :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -70,6 +75,8 @@ async def create_project(
 
         return new_project
     except Exception as e:
+        print("ERREUR create_project :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -101,6 +108,8 @@ async def edit_project(
 
         return project
     except Exception as e:
+        print("ERREUR edit_project :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -127,6 +136,8 @@ async def delete_project(
         return project
 
     except Exception as e:
+        print("ERREUR delete_project :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -143,6 +154,8 @@ async def get_user_projects(db: db_dependency, user: user_dependency):
         return projects
 
     except Exception as e:
+        print("ERREUR get_all_user_project :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -159,6 +172,8 @@ async def get_any_user_projects(
         projects = db.query(Project).filter(Project.user_id == user_id).all()
         return projects
     except Exception as e:
+        print("ERREUR get_any_user_projects :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -175,5 +190,7 @@ async def get_user_projects_tasks(
         tasks = db.query(Task).filter(Task.project_id == project_id).all()
         return tasks
     except Exception as e:
+        print("ERREUR get_all_project_task :", e)
+        traceback.print_exc()
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
