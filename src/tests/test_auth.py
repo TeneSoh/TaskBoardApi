@@ -15,7 +15,7 @@ from src.routes.auth.auth import (
 from src.services.services import get_db
 from src.tests.utilities import *
 
-# on recrit la dependence de l'application principale ce qui fait que lors du test c'est la sqlit3 qui est utiliser au lieu de postgresql
+
 app.dependency_overrides[get_db] = getTest_db
 bcrypt_context = CryptContext(["argon2", "bcrypt"], deprecated="auto")
 
