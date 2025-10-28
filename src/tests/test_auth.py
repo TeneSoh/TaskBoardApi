@@ -105,9 +105,9 @@ def test_create_user(test_user):
         "password": "douglas123",
     }
 
-    respose = client.post("/auth/register-user", json=data)
+    response = client.post("/auth/register-user/", json=data)
 
-    assert respose.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_201_CREATED
     db = TestingSessionLocal()
     user = db.query(User).filter(User.username == data.get("username")).first()
     assert user is not None

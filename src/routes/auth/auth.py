@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from decouple import config
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
 from passlib.context import CryptContext
@@ -17,6 +17,7 @@ class UserRequest(BaseModel):
     username: str
     email: str
     password: str
+    # profile_image: UploadFile = File(...)
 
 
 # config the jwt
@@ -83,7 +84,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 
 # register the user
-@route.post("/register-user", status_code=status.HTTP_201_CREATED)
+@route.post("/register-user/", status_code=status.HTTP_201_CREATED)
 async def createUser(data: UserRequest, db: db_dependency):
     user = User(
         username=data.username,
