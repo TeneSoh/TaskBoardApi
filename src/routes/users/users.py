@@ -1,5 +1,5 @@
 import shutil
-from pathlib import Path
+from pathlib import Path as Pathlib
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 
@@ -42,8 +42,8 @@ async def edit_user_profile(
                 status_code=400, detail="Ce fichier n'est pas une image valide"
             )
 
-    path = Path.cwd().parent.parent / "images/profiles" / str(user.get("id"))
-    imagepath = Path(path)
+    path = Pathlib.cwd().parent.parent / "images/profiles" / str(user.get("id"))
+    imagepath = Pathlib(path)
     imagepath.mkdir(exist_ok=True, parents=True)
 
     file_path = imagepath / f"{user.get('id')}_{profile_image.filename}"

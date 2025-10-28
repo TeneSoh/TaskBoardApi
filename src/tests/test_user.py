@@ -1,5 +1,5 @@
 import io
-from pathlib import Path
+from pathlib import Path as Pathlib
 
 import pytest
 from fastapi import HTTPException, status
@@ -38,7 +38,7 @@ def test_auth_user(test_user):
 
 @pytest.mark.asyncio
 @pytest.mark.integration
-async def test_edit_user_profile_without_image(test_auth_user, tmp_path):
+async def test_edit_user_profile_with_image(test_auth_user, tmp_path):
 
     testing_user, headers = test_auth_user
 
@@ -59,6 +59,6 @@ async def test_edit_user_profile_without_image(test_auth_user, tmp_path):
     assert resp_json["user"]["email"] == data["email"]
 
     # Vérifie que l'image a été sauvegardée
-    saved_path = Path(resp_json["user"]["profile_image"])
+    saved_path = Pathlib(resp_json["user"]["profile_image"])
     assert saved_path.exists()
     assert saved_path.read_bytes() == file_content
